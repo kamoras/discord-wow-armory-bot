@@ -7,16 +7,19 @@ import time
 from wow import *
 from util import *
 from settings import *
+import armory
 
-client = discord.Client()
-
+intents = discord.Intents.default()
+intents.message_content = True
+client = discord.Client(intents=intents)
 
 @client.event
 async def on_message(message):
     """Listens for specific user messages."""
     # Current time (Used for cache busting character thumbnails).
     epoch_time = int(time.time())
-
+    # print(message)
+    # print(message.content)
     # If the author is the bot do nothing.
     if message.author == client.user:
         return
@@ -29,48 +32,51 @@ async def on_message(message):
         # Returns a message to the channel if there's an error fetching.
         if info == "not_found":
             msg = GOLD_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         elif info == "connection_error":
             msg = CONNECTION_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         elif info == "credential_error":
             msg = CREDENTIAL_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         else:
             msg = (
                 "`The current price of a WoW Token on %s realms is %s gold.` :moneybag:"
                 % (region, info)
             )
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
     if message.content.startswith("!armory pve"):
         split = split_query(message.content, "pve")
 
         # Assigns the 3rd index in the split to the region
         region = split[3]
-
+        print(split[0])
+        print(split[1])
+        print(split[2])
+        print(split[3])
         # Sends the returned data to the character_info function to build a character sheet.
         info = await character_info(split[0], split[1], split[2], region)
-
+        
         # Returns a message to the channel if there's an error fetching.
         if info == "not_found":
             msg = NOT_FOUND_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         elif info == "connection_error":
             msg = CONNECTION_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         elif info == "credential_error":
             msg = CREDENTIAL_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         elif info == "unknown_error":
             msg = UNKNOWN_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         else:
             # Format the AOTC/CE strings if they exist.
@@ -194,7 +200,7 @@ async def on_message(message):
                 inline=True,
             )
 
-            await client.send_message(message.channel, embed=msg)
+            await message.channel.send(embed=msg)
 
     # Same as before, except this time it's building data for PVP.
     if message.content.startswith("!armory pvp"):
@@ -204,19 +210,19 @@ async def on_message(message):
 
         if info == "not_found":
             msg = NOT_FOUND_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         elif info == "connection_error":
             msg = CONNECTION_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         elif info == "credential_error":
             msg = CREDENTIAL_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         elif info == "unknown_error":
             msg = UNKNOWN_ERROR.format(message)
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
         else:
             msg = discord.Embed(
@@ -296,7 +302,7 @@ async def on_message(message):
                 inline=True,
             )
 
-            await client.send_message(message.channel, embed=msg)
+            await message.channel.send(embed=msg)
 
     # Display a list of available commands and a set of credits.
     if message.content.startswith("!armory help"):
@@ -326,7 +332,7 @@ async def on_message(message):
         msg = "%s".format(message) % re.sub(
             r"(^[ \t]+|[ \t]+(?=:))", "", msg, flags=re.M
         )
-        await client.send_message(message.channel, msg)
+        await message.channel.send(msg)
 
 
 @client.event

@@ -1,0 +1,6 @@
+export WOW_CLIENT_ID=6f2a1ceb0864471b8a6cec3fe6d7f38a
+export WOW_CLIENT_SECRET=Fn139Rrjna70S3FSCWtiCV51PriJreLb
+export WOW_REGION=us
+export LOCALE=en_US
+export DISCORD_BOT_TOKEN=MTA2ODcyNjY1Mzg0NjU2MDg0OQ.Gve_d2.qUvm20ZEI_9x--eb_a2xF8lZ_1yRE3YmgGRnDw
+python3 app.py
